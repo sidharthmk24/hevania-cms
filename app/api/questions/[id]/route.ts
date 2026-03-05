@@ -1,0 +1,32 @@
+import { NextResponse } from "next/server";
+import { createApiSupabaseClient } from "@/lib/supabase-admin";
+
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+  const body = await request.json();
+  const payload = {
+    question_text: String(body?.question_text || ""),
+    option_a: String(body?.option_a || ""),
+    option_b: String(body?.option_b || ""),
+    option_c: String(body?.option_c || ""),
+    option_d: String(body?.option_d || ""),
+    order: Number(body?.order || 1)
+  };
+
+  if (!payload.question_text || !payload.option_a || !payload.option_b || !payload.option_c || !payload.option_d) {
+    return NextResponse.json({ error: "All question fields are required." }, { status: 400 });
+  }
+
+  const supabase = createApiSupabaseClient();
+  const { data, error } = await supabase.from("questions").update(payload).eq("id", params.id).select("*").single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ data });
+}
+
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  const supabase = createApiSupabaseClient();
+  const { error } = await supabase.from("questions").delete().eq("id", params.id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
