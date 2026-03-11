@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, BookOpen, LogOut, Leaf, CreditCard } from "lucide-react";
+import { LayoutDashboard, BookOpen, LogOut, Leaf, CreditCard, Wrench, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,10 @@ type Props = {
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Topics", href: "/admin/topics", icon: BookOpen },
+  { label: "Tools", href: "/admin/tools", icon: Wrench },
   { label: "Payments", href: "/admin/payments", icon: CreditCard },
+  { label: "Messages", href: "/admin/messages", icon: MessageSquare },
   { label: "Quiz Player", href: "/quiz", icon: BookOpen }
 ];
 
@@ -21,8 +24,10 @@ export function AdminShell({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   let pageTitle = "Dashboard";
-  if (pathname.startsWith("/admin/topics/")) pageTitle = "Topic Editor";
+  if (pathname.startsWith("/admin/topics")) pageTitle = "Topics Dashboard";
   if (pathname.startsWith("/admin/payments")) pageTitle = "Payments Log";
+  if (pathname.startsWith("/admin/messages")) pageTitle = "Messages";
+  if (pathname.startsWith("/admin/tools")) pageTitle = "Tools Manager";
   if (pathname.startsWith("/quiz")) pageTitle = "Quiz Player";
 
   async function onSignOut() {
