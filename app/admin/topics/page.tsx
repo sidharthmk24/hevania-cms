@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Plus, ArrowRight, FileText } from "lucide-react";
+import { Plus, ArrowRight, FileText, MoreVertical, Trash2 } from "lucide-react";
 import type { Topic } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const defaultResults = {
-  result_a_text: "Result A",
+  result_a_text: "Calm And Confident",
   result_b_text: "Result B",
   result_c_text: "Result C",
   result_d_text: "Result D"
@@ -24,6 +24,14 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   async function loadTopics() {
     const res = await fetch("/api/topics", { cache: "no-store" });
@@ -69,6 +77,20 @@ export default function AdminDashboardPage() {
       return;
     }
     setErrorMessage(`Create topic failed: ${json.error || "Unknown error"}`);
+  }
+
+  async function onDeleteTopic(id: string) {
+    if (!confirm("Are you sure you want to delete this topic?")) return;
+    setDeletingId(id);
+    const res = await fetch(`/api/topics/${id}`, { method: "DELETE" });
+    setDeletingId(null);
+    if (res.ok) {
+      setTopics(topics.filter((t) => t.id !== id));
+      setSuccessMessage("Topic deleted successfully.");
+    } else {
+      const json = await res.json();
+      setErrorMessage(`Delete topic failed: ${json.error || "Unknown error"}`);
+    }
   }
 
   return (
@@ -154,10 +176,43 @@ export default function AdminDashboardPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
             {topics.map((topic) => (
-              <Card key={topic.id} className="group relative overflow-hidden border-brand-copper/20 bg-white shadow-warm-sm transition-all hover:translate-y-[-2px] hover:shadow-card-hover">
-                <div className="absolute top-0 left-0 w-1 h-full bg-brand-copper opacity-80" />
-                <CardHeader className="pl-6">
-                  <CardTitle className="line-clamp-2 text-lg font-serif text-brand-dark group-hover:text-brand-copper transition-colors">{topic.title}</CardTitle>
+              <Card key={topic.id} className="group relative border-brand-copper/20 bg-white shadow-warm-sm transition-all hover:translate-y-[-2px] hover:shadow-card-hover">
+                <div className="absolute top-0 left-0 w-1 h-full bg-brand-copper opacity-80 rounded-l-xl" />
+                <CardHeader className="pl-6 relative pr-12">
+                  <div className="absolute right-2 top-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 text-brand-dark/60 hover:text-brand-dark"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.nativeEvent.stopImmediatePropagation();
+                        setOpenMenuId(openMenuId === topic.id ? null : topic.id);
+                      }}
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                    {openMenuId === topic.id && (
+                      <div className="absolute right-0 top-full z-50 mt-1 w-32 rounded-md border border-brand-copper/20 bg-white shadow-md overflow-hidden">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.nativeEvent.stopImmediatePropagation();
+                            setOpenMenuId(null);
+                            onDeleteTopic(topic.id);
+                          }}
+                          disabled={deletingId === topic.id}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <CardTitle className="line-clamp-2 text-lg font-serif text-brand-dark group-hover:text-brand-copper transition-colors pr-6">{topic.title}</CardTitle>
                   <CardDescription className="text-brand-dark/60">Manage questions and result copy.</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-6 pt-2">

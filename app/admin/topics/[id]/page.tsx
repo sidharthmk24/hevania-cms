@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Plus, Trash2, ChevronLeft, Save, LayoutTemplate, HelpCircle, BarChart3 } from "lucide-react";
+import { Plus, Trash2, ChevronLeft, Save, LayoutTemplate, HelpCircle, BarChart3, ChevronDown } from "lucide-react";
 import type { Question, Topic } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -26,6 +26,8 @@ export default function TopicEditorPage() {
   const [questionStats, setQuestionStats] = useState<
     Array<{ id: string; question_text: string; order: number; counts: { A: number; B: number; C: number; D: number } }>
   >([]);
+  const [numOptions, setNumOptions] = useState<number>(4);
+  const [isNumOptionsOpen, setIsNumOptionsOpen] = useState(false);
 
   const nextOrder = useMemo(() => (questions.length ? Math.max(...questions.map((q) => q.order)) + 1 : 1), [questions]);
 
@@ -67,6 +69,16 @@ export default function TopicEditorPage() {
   }, [topicId]);
 
   useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (!(e.target as Element).closest(".num-options-dropdown")) {
+        setIsNumOptionsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
     async function loadAnalytics() {
       const res = await fetch(`/api/topics/${topicId}/analytics`, { cache: "no-store" });
       const json = await res.json();
@@ -87,9 +99,9 @@ export default function TopicEditorPage() {
       topic_id: topicId,
       question_text: String(formData.get("question_text") || ""),
       option_a: String(formData.get("option_a") || ""),
-      option_b: String(formData.get("option_b") || ""),
-      option_c: String(formData.get("option_c") || ""),
-      option_d: String(formData.get("option_d") || ""),
+      option_b: numOptions >= 2 ? String(formData.get("option_b") || "") : "",
+      option_c: numOptions >= 3 ? String(formData.get("option_c") || "") : "",
+      option_d: numOptions >= 4 ? String(formData.get("option_d") || "") : "",
       order: Number(formData.get("order") || nextOrder)
     };
 
@@ -101,6 +113,7 @@ export default function TopicEditorPage() {
     const json = await res.json();
     if (res.ok) {
       setOpen(false);
+      setNumOptions(4); // Reset form state
       setSuccessMessage("Question added successfully.");
       loadData();
       return;
@@ -190,7 +203,7 @@ export default function TopicEditorPage() {
           <DialogContent className="border-brand-copper/20 shadow-warm-lg bg-brand-sand/10 backdrop-blur-md">
             <DialogHeader>
               <DialogTitle className="font-serif text-xl text-brand-dark tracking-tight">Add New Question</DialogTitle>
-              <DialogDescription className="text-brand-dark/60">Create a multiple choice question with 4 options.</DialogDescription>
+              <DialogDescription className="text-brand-dark/60">Create a multiple choice question with up to 4 options.</DialogDescription>
             </DialogHeader>
             <form
               onSubmit={(e) => {
@@ -204,23 +217,62 @@ export default function TopicEditorPage() {
                 <Label htmlFor="question_text" className="text-brand-dark font-medium">Question</Label>
                 <Input id="question_text" name="question_text" required className="border-brand-copper/20 bg-white focus-visible:ring-brand-olive" placeholder="e.g. How do you feel about tracking expenses?" />
               </div>
+              <div className="space-y-1.5 flex items-center justify-between relative">
+                <div>
+                  <Label htmlFor="num_options" className="text-brand-dark font-medium block">Number of Options</Label>
+                  <span className="text-xs text-brand-dark/60">Choose between 2 to 4 options.</span>
+                </div>
+                <div className="relative num-options-dropdown">
+                  <button
+                    type="button"
+                    onClick={() => setIsNumOptionsOpen(!isNumOptionsOpen)}
+                    className="flex items-center justify-between border border-brand-copper/20 rounded-md py-2 px-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-olive w-48 shadow-sm transition-colors hover:border-brand-copper/40"
+                  >
+                    <span className="font-medium text-brand-dark/90">{numOptions} Options <span className="text-brand-dark/50 font-normal ml-1">{numOptions === 2 ? "(A, B)" : numOptions === 3 ? "(A, B, C)" : "(A, B, C, D)"}</span></span>
+                    <ChevronDown className={`w-4 h-4 text-brand-dark/50 transition-transform duration-200 ${isNumOptionsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {isNumOptionsOpen && (
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-brand-copper/20 rounded-md shadow-lg overflow-hidden z-50 animate-fade-in origin-top">
+                      {[2, 3, 4].map(num => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => { setNumOptions(num); setIsNumOptionsOpen(false); }}
+                          className={`w-full text-left px-3 py-2.5 text-sm transition-colors ${numOptions === num ? 'bg-brand-olive/10 text-brand-olive font-medium' : 'text-brand-dark hover:bg-brand-sand/40'}`}
+                        >
+                          {num} Options <span className={numOptions === num ? "text-brand-olive/60 font-normal ml-1" : "text-brand-dark/50 ml-1"}>{num === 2 ? "(A, B)" : num === 3 ? "(A, B, C)" : "(A, B, C, D)"}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="option_a" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option A</Label>
-                  <Input id="option_a" name="option_a" required className="border-brand-copper/20 text-[13px]" placeholder="Type response A..." />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="option_b" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option B</Label>
-                  <Input id="option_b" name="option_b" required className="border-brand-copper/20 text-[13px]" placeholder="Type response B..." />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="option_c" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option C</Label>
-                  <Input id="option_c" name="option_c" required className="border-brand-copper/20 text-[13px]" placeholder="Type response C..." />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="option_d" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option D</Label>
-                  <Input id="option_d" name="option_d" required className="border-brand-copper/20 text-[13px]" placeholder="Type response D..." />
-                </div>
+                {numOptions >= 1 && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="option_a" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option A</Label>
+                    <Input id="option_a" name="option_a" required className="border-brand-copper/20 text-[13px]" placeholder="Type response A..." />
+                  </div>
+                )}
+                {numOptions >= 2 && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="option_b" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option B</Label>
+                    <Input id="option_b" name="option_b" required className="border-brand-copper/20 text-[13px]" placeholder="Type response B..." />
+                  </div>
+                )}
+                {numOptions >= 3 && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="option_c" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option C</Label>
+                    <Input id="option_c" name="option_c" required className="border-brand-copper/20 text-[13px]" placeholder="Type response C..." />
+                  </div>
+                )}
+                {numOptions >= 4 && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="option_d" className="text-brand-dark/80 text-xs font-semibold uppercase tracking-wider">Option D</Label>
+                    <Input id="option_d" name="option_d" required className="border-brand-copper/20 text-[13px]" placeholder="Type response D..." />
+                  </div>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="order" className="text-brand-dark font-medium">Display Order</Label>
@@ -403,34 +455,38 @@ export default function TopicEditorPage() {
                           className="pl-[3.25rem] border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/5"
                         />
                       </div>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-brand-copper uppercase">Opt C</span>
-                        <Input
-                          value={edits[q.id]?.option_c || ""}
-                          onChange={(e) =>
-                            setEdits((prev) => ({
-                              ...prev,
-                              [q.id]: { ...(prev[q.id] || q), option_c: e.target.value }
-                            }))
-                          }
-                          placeholder="Option C text..."
-                          className="pl-[3.25rem] border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/5"
-                        />
-                      </div>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-brand-copper uppercase">Opt D</span>
-                        <Input
-                          value={edits[q.id]?.option_d || ""}
-                          onChange={(e) =>
-                            setEdits((prev) => ({
-                              ...prev,
-                              [q.id]: { ...(prev[q.id] || q), option_d: e.target.value }
-                            }))
-                          }
-                          placeholder="Option D text..."
-                          className="pl-[3.25rem] border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/5"
-                        />
-                      </div>
+                      {(edits[q.id]?.option_c || q.option_c || q.option_d) ? (
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-brand-copper uppercase">Opt C</span>
+                          <Input
+                            value={edits[q.id]?.option_c || ""}
+                            onChange={(e) =>
+                              setEdits((prev) => ({
+                                ...prev,
+                                [q.id]: { ...(prev[q.id] || q), option_c: e.target.value }
+                              }))
+                            }
+                            placeholder="Option C text..."
+                            className="pl-[3.25rem] border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/5"
+                          />
+                        </div>
+                      ) : null}
+                      {(edits[q.id]?.option_d || q.option_d) ? (
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-brand-copper uppercase">Opt D</span>
+                          <Input
+                            value={edits[q.id]?.option_d || ""}
+                            onChange={(e) =>
+                              setEdits((prev) => ({
+                                ...prev,
+                                [q.id]: { ...(prev[q.id] || q), option_d: e.target.value }
+                              }))
+                            }
+                            placeholder="Option D text..."
+                            className="pl-[3.25rem] border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/5"
+                          />
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex items-center justify-between pt-3 mt-1 border-t border-brand-copper/10">
                       <div className="flex items-center gap-3">
