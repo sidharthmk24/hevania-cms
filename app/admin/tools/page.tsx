@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Wrench, Plus, Pencil, Trash2, Check, X, ToggleLeft, ToggleRight, Upload, ImageIcon } from "lucide-react";
+import { Wrench, Plus, Pencil, Trash2, Check, X, ToggleLeft, ToggleRight, Upload, ImageIcon, GripVertical } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,10 @@ export default function ToolsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -304,6 +308,70 @@ export default function ToolsAdminPage() {
       setError((err as Error).message);
     }
   }
+
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDraggedIndex(index);
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/html", e.currentTarget.outerHTML);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
+    e.preventDefault(); 
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = "move";
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLTableRowElement>, dropIndex: number) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newTools = [...tools];
+    const draggedItem = newTools[draggedIndex];
+    newTools.splice(draggedIndex, 1);
+    newTools.splice(dropIndex, 0, draggedItem);
+    
+    const updatedTools = newTools.map((tool, index) => ({
+      ...tool,
+      display_order: index + 1
+    }));
+
+    setTools(updatedTools);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    
+    setIsUpdatingOrder(true);
+    try {
+      const payload = updatedTools.map(t => ({ id: t.id, display_order: t.display_order }));
+      const res = await fetch("/api/tools/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to update order");
+      
+      flash("Tool order updated.");
+    } catch (err: unknown) {
+      setError((err as Error).message);
+      await loadTools();
+    } finally {
+      setIsUpdatingOrder(false);
+    }
+  };
 
   const isSavingOrUploading = saving || uploading || uploadingPdf;
 
@@ -639,6 +707,7 @@ export default function ToolsAdminPage() {
                 <table className="w-full text-sm text-left whitespace-nowrap">
                   <thead className="text-[11px] uppercase tracking-widest text-brand-copper bg-brand-sand/20 border-b border-brand-copper/10">
                     <tr>
+                      <th className="font-semibold w-10"></th>
                       <th className="px-6 py-4 font-semibold">Order</th>
                       <th className="px-6 py-4 font-semibold">Image</th>
                       <th className="px-6 py-4 font-semibold">Title</th>
@@ -649,9 +718,24 @@ export default function ToolsAdminPage() {
                       <th className="px-6 py-4 font-semibold">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-brand-copper/10 text-brand-dark/80">
-                    {tools.map((tool) => (
-                      <tr key={tool.id} className="hover:bg-brand-sand/10 transition-colors">
+                  <tbody className={`divide-y divide-brand-copper/10 text-brand-dark/80 ${isUpdatingOrder ? "opacity-50 pointer-events-none" : ""}`}>
+                    {tools.map((tool, index) => (
+                      <tr 
+                        key={tool.id} 
+                        className={`hover:bg-brand-sand/10 transition-all bg-white ${draggedIndex === index ? "opacity-40 scale-[0.99] shadow-inner" : ""} ${dragOverIndex === index ? "border-t-2 border-brand-copper shadow-[0_-2px_6px_rgba(0,0,0,0.05)]" : ""}`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragEnter={(e) => handleDragEnter(e, index)}
+                        onDragOver={handleDragOver}
+                        onDragEnd={() => {
+                          setDraggedIndex(null);
+                          setDragOverIndex(null);
+                        }}
+                        onDrop={(e) => handleDrop(e, index)}
+                      >
+                        <td className="px-3 py-4 text-brand-dark/30 cursor-grab hover:text-brand-copper active:cursor-grabbing text-center">
+                          <GripVertical className="w-5 h-5 mx-auto" />
+                        </td>
                         <td className="px-6 py-4 text-brand-dark/40 font-mono text-xs">{tool.display_order}</td>
                         <td className="px-6 py-4">
                           {tool.image_url ? (
@@ -669,7 +753,7 @@ export default function ToolsAdminPage() {
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 font-medium text-brand-dark max-w-[180px] truncate">
+                        <td className="px-6 py-4 font-medium max-w-[180px] truncate text-brand-dark">
                           {tool.title}
                           {tool.is_free && (
                             <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-brand-olive bg-brand-olive/10 px-1.5 py-0.5 rounded">

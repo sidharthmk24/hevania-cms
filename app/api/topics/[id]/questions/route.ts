@@ -25,8 +25,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
     order: Number(body?.order || 1)
   };
 
-  if (!payload.question_text || !payload.option_a || !payload.option_b || !payload.option_c || !payload.option_d) {
-    return NextResponse.json({ error: "All question fields are required." }, { status: 400 });
+  if (!payload.question_text || !payload.option_a || !payload.option_b) {
+    return NextResponse.json({ error: "Question text, Option A, and Option B are required." }, { status: 400 });
   }
 
   const supabase = createApiSupabaseClient();
