@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Plus, Trash2, ChevronLeft, Save, LayoutTemplate, HelpCircle, BarChart3, ChevronDown } from "lucide-react";
+import { Plus, Trash2, ChevronLeft, Save, LayoutTemplate, HelpCircle, BarChart3, ChevronDown, Eye } from "lucide-react";
 import type { Question, Topic } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { QuizPreview } from "@/components/QuizPreview";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ export default function TopicEditorPage() {
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
   const [attemptsCount, setAttemptsCount] = useState(0);
   const [questionStats, setQuestionStats] = useState<
     Array<{ id: string; question_text: string; order: number; counts: { A: number; B: number; C: number; D: number } }>
@@ -184,22 +186,38 @@ export default function TopicEditorPage() {
     setSuccessMessage("Result responses saved.");
   }
 
+  if (showPreview) {
+    return (
+      <div className="container mx-auto py-6">
+        <QuizPreview topicId={topicId} onBack={() => setShowPreview(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pb-20">
       <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between border-b border-brand-copper/10 pb-6 rounded-t-xl bg-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-sm px-6">
         <div>
-          <Link href="/admin" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-brand-copper hover:text-brand-dark transition-colors">
-            <ChevronLeft className="h-4 w-4" /> Back to Dashboard
+          <Link href="/admin/topics" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-brand-copper hover:text-brand-dark transition-colors">
+            <ChevronLeft className="h-4 w-4" /> Back to List
           </Link>
           <h1 className="mt-2 text-3xl font-serif text-brand-dark tracking-tight">{topic?.title || "Topic Editor"}</h1>
         </div>
 
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-brand-olive text-white hover:bg-brand-green shadow-warm-sm transition-all md:w-auto w-full group">
-              <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" /> Add Question
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-3 md:w-auto w-full">
+          <Button 
+            variant="outline" 
+            className="border-brand-copper/20 text-brand-dark bg-white hover:bg-brand-sand/40 w-full md:w-auto"
+            onClick={() => setShowPreview(true)}
+          >
+            <Eye className="mr-2 h-4 w-4" /> Preview Quiz
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-brand-olive text-white hover:bg-brand-green shadow-warm-sm transition-all md:w-auto flex-1 group">
+                <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" /> Add Question
+              </Button>
+            </DialogTrigger>
           <DialogContent className="border-brand-copper/20 shadow-warm-lg bg-brand-sand/10 backdrop-blur-md">
             <DialogHeader>
               <DialogTitle className="font-serif text-xl text-brand-dark tracking-tight">Add New Question</DialogTitle>
@@ -285,6 +303,7 @@ export default function TopicEditorPage() {
           </DialogContent>
         </Dialog>
       </div>
+      </div>
 
       <div className="px-6 space-y-3">
         {errorMessage ? <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg animate-fade-in">{errorMessage}</div> : null}
@@ -300,13 +319,13 @@ export default function TopicEditorPage() {
             <CardHeader className="bg-brand-sand/20 border-b border-brand-copper/10 pb-4">
               <div className="flex items-center gap-2 text-brand-dark">
                 <LayoutTemplate className="w-5 h-5 text-brand-copper" />
-                <CardTitle className="text-lg font-serif">Topic Content & Results</CardTitle>
+                <CardTitle className="text-lg font-serif">Quiz Content & Results</CardTitle>
               </div>
               <CardDescription className="text-brand-dark/60 mt-1">Configure the intro text and the personality result buckets.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 pt-6">
               <div className="space-y-1.5">
-                <Label htmlFor="topic-heading" className="text-brand-dark/80 font-medium">Topic Heading</Label>
+                <Label htmlFor="topic-heading" className="text-brand-dark/80 font-medium">Quiz Heading</Label>
                 <Input
                   id="topic-heading"
                   value={topicForm.heading || ""}
@@ -316,7 +335,7 @@ export default function TopicEditorPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="topic-description" className="text-brand-dark/80 font-medium">Topic Description</Label>
+                <Label htmlFor="topic-description" className="text-brand-dark/80 font-medium">Quiz Description</Label>
                 <Textarea
                   id="topic-description"
                   value={topicForm.description || ""}

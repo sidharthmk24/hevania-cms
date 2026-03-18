@@ -36,10 +36,7 @@ const emptyForm = {
   price_inr: "",
   price_usd: "",
   is_free: false,
-  button_text: "Download",
   image_url: "",
-  bg_color: "bg-white",
-  text_color: "text-[#1A1A1A]",
   is_bundle: false,
   pdf_key: "",
   display_order: "0",
@@ -110,10 +107,7 @@ export default function ToolsAdminPage() {
       price_inr: tool.price_inr !== null ? String(tool.price_inr) : "",
       price_usd: tool.price_usd || "",
       is_free: tool.is_free,
-      button_text: tool.button_text,
       image_url: tool.image_url || "",
-      bg_color: tool.bg_color,
-      text_color: tool.text_color,
       is_bundle: tool.is_bundle,
       pdf_key: tool.pdf_key || "",
       display_order: String(tool.display_order),
@@ -243,10 +237,10 @@ export default function ToolsAdminPage() {
       price_inr: form.price_inr !== "" ? Number(form.price_inr) : null,
       price_usd: form.price_usd.trim() || null,
       is_free: form.is_free,
-      button_text: form.button_text.trim() || "Download",
+      button_text: form.is_free ? "Download Free" : "Download",
       image_url: finalImageUrl,
-      bg_color: form.bg_color.trim() || "bg-white",
-      text_color: form.text_color.trim() || "text-[#1A1A1A]",
+      bg_color: form.is_free ? "bg-[#E2AA5F]" : "bg-white",
+      text_color: form.is_free ? "text-white" : "text-[#1A1A1A]",
       is_bundle: form.is_bundle,
       pdf_key: finalPdfKey,
       display_order: Number(form.display_order) || 0,
@@ -537,18 +531,7 @@ export default function ToolsAdminPage() {
                   />
                 </div>
 
-                {/* Button Text */}
-                <div>
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-brand-copper mb-1.5 block">
-                    Button Text
-                  </Label>
-                  <Input
-                    value={form.button_text}
-                    onChange={e => setForm({ ...form, button_text: e.target.value })}
-                    placeholder="Download"
-                    className="border-brand-copper/20"
-                  />
-                </div>
+
 
                 {/* PDF File Upload */}
                 <div className="md:col-span-2">
@@ -608,31 +591,7 @@ export default function ToolsAdminPage() {
                   />
                 </div>
 
-                {/* BG Color */}
-                <div>
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-brand-copper mb-1.5 block">
-                    BG Color Class
-                  </Label>
-                  <Input
-                    value={form.bg_color}
-                    onChange={e => setForm({ ...form, bg_color: e.target.value })}
-                    placeholder="bg-white or bg-[#DCAB6B]"
-                    className="border-brand-copper/20"
-                  />
-                </div>
 
-                {/* Text Color */}
-                <div>
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-brand-copper mb-1.5 block">
-                    Text Color Class
-                  </Label>
-                  <Input
-                    value={form.text_color}
-                    onChange={e => setForm({ ...form, text_color: e.target.value })}
-                    placeholder="text-[#1A1A1A] or text-white"
-                    className="border-brand-copper/20"
-                  />
-                </div>
 
                 {/* Toggles */}
                 <div className="md:col-span-2 flex flex-wrap gap-6">
