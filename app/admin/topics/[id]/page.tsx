@@ -169,7 +169,6 @@ export default function TopicEditorPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        heading: topicForm.heading || "",
         description: topicForm.description || "",
         result_a_text: topicForm.result_a_text || "",
         result_b_text: topicForm.result_b_text || "",
@@ -324,16 +323,7 @@ export default function TopicEditorPage() {
               <CardDescription className="text-brand-dark/60 mt-1">Configure the intro text and the personality result buckets.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 pt-6">
-              <div className="space-y-1.5">
-                <Label htmlFor="topic-heading" className="text-brand-dark/80 font-medium">Quiz Heading</Label>
-                <Input
-                  id="topic-heading"
-                  value={topicForm.heading || ""}
-                  onChange={(e) => setTopicForm((prev) => ({ ...prev, heading: e.target.value }))}
-                  placeholder="Heading shown in external apps/quiz intro"
-                  className="border-brand-copper/20 focus-visible:ring-brand-copper bg-brand-sand/10 font-serif text-lg py-6"
-                />
-              </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="topic-description" className="text-brand-dark/80 font-medium">Quiz Description</Label>
                 <Textarea

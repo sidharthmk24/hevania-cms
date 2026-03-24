@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Wrench, Plus, Pencil, Trash2, Check, X, ToggleLeft, ToggleRight, Upload, ImageIcon, GripVertical } from "lucide-react";
+import { Wrench, Plus, Pencil, Trash2, Check, X, Upload, ImageIcon, GripVertical } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -412,6 +412,43 @@ export default function ToolsAdminPage() {
             <CardContent className="p-6">
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
+                  <div className="md:col-span-2 flex flex-wrap gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.is_free}
+                      onChange={e => {
+                        const isFree = e.target.checked;
+                        setForm({
+                          ...form,
+                          is_free: isFree,
+                          ...(isFree ? { price_inr: "0", price_usd: "0" } : {})
+                        });
+                      }}
+                      className="accent-brand-olive w-4 h-4"
+                    />
+                    <span className="text-sm font-medium text-brand-dark">Free tool</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.is_bundle}
+                      onChange={e => setForm({ ...form, is_bundle: e.target.checked })}
+                      className="accent-brand-olive w-4 h-4"
+                    />
+                    <span className="text-sm font-medium text-brand-dark">Bundle</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.is_active}
+                      onChange={e => setForm({ ...form, is_active: e.target.checked })}
+                      className="accent-brand-olive w-4 h-4"
+                    />
+                    <span className="text-sm font-medium text-brand-dark">Active (visible on store)</span>
+                  </label>
+                </div>
+
                 {/* Title */}
                 <div className="md:col-span-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-brand-copper mb-1.5 block">
@@ -515,6 +552,7 @@ export default function ToolsAdminPage() {
                     onChange={e => setForm({ ...form, price_inr: e.target.value })}
                     placeholder="e.g. 49 (leave blank if free)"
                     className="border-brand-copper/20"
+                    disabled={form.is_free}
                   />
                 </div>
 
@@ -528,6 +566,7 @@ export default function ToolsAdminPage() {
                     onChange={e => setForm({ ...form, price_usd: e.target.value })}
                     placeholder="e.g. $1.99"
                     className="border-brand-copper/20"
+                    disabled={form.is_free}
                   />
                 </div>
 
@@ -594,35 +633,7 @@ export default function ToolsAdminPage() {
 
 
                 {/* Toggles */}
-                <div className="md:col-span-2 flex flex-wrap gap-6">
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={form.is_free}
-                      onChange={e => setForm({ ...form, is_free: e.target.checked })}
-                      className="accent-brand-olive w-4 h-4"
-                    />
-                    <span className="text-sm font-medium text-brand-dark">Free tool</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={form.is_bundle}
-                      onChange={e => setForm({ ...form, is_bundle: e.target.checked })}
-                      className="accent-brand-olive w-4 h-4"
-                    />
-                    <span className="text-sm font-medium text-brand-dark">Bundle</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={form.is_active}
-                      onChange={e => setForm({ ...form, is_active: e.target.checked })}
-                      className="accent-brand-olive w-4 h-4"
-                    />
-                    <span className="text-sm font-medium text-brand-dark">Active (visible on store)</span>
-                  </label>
-                </div>
+              
 
                 {/* Actions */}
                 <div className="md:col-span-2 flex gap-3 pt-2">
@@ -663,18 +674,18 @@ export default function ToolsAdminPage() {
               </div>
             ) : (
               <div className="overflow-x-auto w-full">
-                <table className="w-full text-sm text-left whitespace-nowrap">
+                <table className="w-full text-sm text-center whitespace-nowrap">
                   <thead className="text-[11px] uppercase tracking-widest text-brand-copper bg-brand-sand/20 border-b border-brand-copper/10">
                     <tr>
                       <th className="font-semibold w-10"></th>
-                      <th className="px-6 py-4 font-semibold">Order</th>
-                      <th className="px-6 py-4 font-semibold">Image</th>
-                      <th className="px-6 py-4 font-semibold">Title</th>
-                      <th className="px-6 py-4 font-semibold">Price</th>
-                      <th className="px-6 py-4 font-semibold">PDF File</th>
-                      <th className="px-6 py-4 font-semibold">Bundle</th>
-                      <th className="px-6 py-4 font-semibold">Status</th>
-                      <th className="px-6 py-4 font-semibold">Actions</th>
+                      <th className="px-6 py-4 font-semibold text-center">Order</th>
+                      <th className="px-6 py-4 font-semibold text-center">Image</th>
+                      <th className="px-6 py-4 font-semibold text-center">Title</th>
+                      <th className="px-6 py-4 font-semibold text-center">Price</th>
+                      <th className="px-6 py-4 font-semibold text-center">PDF File</th>
+                      <th className="px-6 py-4 font-semibold text-center">Bundle</th>
+                      <th className="px-6 py-4 font-semibold text-center">Status</th>
+                      <th className="px-6 py-4 font-semibold text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody className={`divide-y divide-brand-copper/10 text-brand-dark/80 ${isUpdatingOrder ? "opacity-50 pointer-events-none" : ""}`}>
@@ -695,32 +706,29 @@ export default function ToolsAdminPage() {
                         <td className="px-3 py-4 text-brand-dark/30 cursor-grab hover:text-brand-copper active:cursor-grabbing text-center">
                           <GripVertical className="w-5 h-5 mx-auto" />
                         </td>
-                        <td className="px-6 py-4 text-brand-dark/40 font-mono text-xs">{tool.display_order}</td>
+                        <td className="px-6 py-4 text-brand-dark/40 font-mono text-xs text-center">{tool.display_order}</td>
                         <td className="px-6 py-4">
-                          {tool.image_url ? (
-                            <Image
-                              src={tool.image_url}
-                              alt={tool.title}
-                              width={48}
-                              height={36}
-                              className="w-12 h-9 object-cover rounded-md border border-brand-copper/10"
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="w-12 h-9 rounded-md bg-brand-sand/40 border border-brand-copper/10 flex items-center justify-center">
-                              <ImageIcon className="w-4 h-4 text-brand-copper/30" />
-                            </div>
-                          )}
+                          <div className="flex justify-center">
+                            {tool.image_url ? (
+                              <Image
+                                src={tool.image_url}
+                                alt={tool.title}
+                                width={48}
+                                height={36}
+                                className="w-12 h-9 object-cover rounded-md border border-brand-copper/10"
+                                unoptimized
+                              />
+                            ) : (
+                              <div className="w-12 h-9 rounded-md bg-brand-sand/40 border border-brand-copper/10 flex items-center justify-center">
+                                <ImageIcon className="w-4 h-4 text-brand-copper/30" />
+                              </div>
+                            )}
+                          </div>
                         </td>
-                        <td className="px-6 py-4 font-medium max-w-[180px] truncate text-brand-dark">
+                        <td className="px-6 py-4 font-medium max-w-[180px] truncate text-brand-dark text-center">
                           {tool.title}
-                          {tool.is_free && (
-                            <span className="ml-2 text-[10px] uppercase tracking-widest font-bold text-brand-olive bg-brand-olive/10 px-1.5 py-0.5 rounded">
-                              Free
-                            </span>
-                          )}
                         </td>
-                        <td className="px-6 py-4 text-sm">
+                        <td className="px-6 py-4 text-sm text-center">
                           {tool.is_free ? "—" : (
                             <span>
                               {tool.price_inr ? `₹${tool.price_inr}` : ""}
@@ -728,12 +736,12 @@ export default function ToolsAdminPage() {
                             </span>
                           )}
                         </td>
-                        <td className="px-6 py-4 font-mono text-xs opacity-70 truncate max-w-[120px]" title={tool.pdf_key || ""}>
+                        <td className="px-6 py-4 font-mono text-xs opacity-70 truncate max-w-[120px] text-center" title={tool.pdf_key || ""}>
                           {tool.pdf_key ? (
                             <a href={tool.pdf_key} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">View PDF</a>
                           ) : "—"}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-center">
                           {tool.is_bundle ? (
                             <span className="text-xs font-bold uppercase tracking-wider text-brand-copper bg-brand-copper/10 px-2 py-0.5 rounded border border-brand-copper/20">
                               Bundle
@@ -741,26 +749,24 @@ export default function ToolsAdminPage() {
                           ) : "—"}
                         </td>
                         <td className="px-6 py-4">
-                          <button
-                            onClick={() => toggleActive(tool)}
-                            title={tool.is_active ? "Click to deactivate" : "Click to activate"}
-                            className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                          >
-                            {tool.is_active ? (
-                              <>
-                                <ToggleRight className="w-5 h-5 text-brand-green" />
-                                <span className="text-brand-green">Active</span>
-                              </>
-                            ) : (
-                              <>
-                                <ToggleLeft className="w-5 h-5 text-brand-dark/30" />
-                                <span className="text-brand-dark/40">Inactive</span>
-                              </>
-                            )}
-                          </button>
+                          <div className="flex items-center justify-center gap-3">
+                            <button
+                              onClick={() => toggleActive(tool)}
+                              disabled={isUpdatingOrder}
+                              title={tool.is_active ? "Click to deactivate" : "Click to activate"}
+                              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-copper/50 focus:ring-offset-2 ${tool.is_active ? 'bg-brand-green' : 'bg-brand-dark/20'}`}
+                            >
+                              <span
+                                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${tool.is_active ? 'translate-x-4' : 'translate-x-0'}`}
+                              />
+                            </button>
+                            <span className={`text-[11px] font-bold uppercase tracking-wider ${tool.is_active ? 'text-brand-green' : 'text-brand-dark/40'}`}>
+                              {tool.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => startEdit(tool)}
                               className="p-1.5 rounded hover:bg-brand-sand/60 text-brand-dark/50 hover:text-brand-copper transition-colors"

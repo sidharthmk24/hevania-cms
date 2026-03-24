@@ -20,7 +20,6 @@ const defaultResults = {
 export default function AdminDashboardPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [title, setTitle] = useState("");
-  const [heading, setHeading] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -62,7 +61,6 @@ export default function AdminDashboardPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: title.trim(),
-        heading: heading.trim(),
         description: description.trim(),
         ...defaultResults
       })
@@ -72,7 +70,6 @@ export default function AdminDashboardPage() {
     setLoading(false);
     if (res.ok) {
       setTitle("");
-      setHeading("");
       setDescription("");
       setSuccessMessage("Topic created successfully.");
       loadTopics();
@@ -136,16 +133,7 @@ export default function AdminDashboardPage() {
                 <Label htmlFor="title" className="text-brand-dark/80">Quiz Title</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Founder Mindset Quiz" className="border-brand-copper/20 focus-visible:ring-brand-copper" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="heading" className="text-brand-dark/80">Quiz Heading</Label>
-                <Input
-                  id="heading"
-                  value={heading}
-                  onChange={(e) => setHeading(e.target.value)}
-                  placeholder="e.g. Discover Your Founder Archetype"
-                  className="border-brand-copper/20 focus-visible:ring-brand-copper"
-                />
-              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="description" className="text-brand-dark/80">Quiz Description</Label>
                 <Input
