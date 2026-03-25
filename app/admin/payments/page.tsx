@@ -22,21 +22,41 @@ export default function PaymentsPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+        
         async function loadPayments() {
             try {
-                const res = await fetch("/api/payments");
+                // cache: 'no-store' ensures we always fetch the latest data from the server
+                const res = await fetch("/api/payments", { cache: "no-store" });
                 if (!res.ok) {
                     throw new Error("Failed to fetch payments");
                 }
                 const json = await res.json();
-                setPayments(json.data || []);
+                if (isMounted) {
+                    setPayments(json.data || []);
+                    setError(null);
+                }
             } catch (err: any) {
-                setError(err.message);
+                if (isMounted) {
+                    setError(err.message);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
+
+        // Initial load
         loadPayments();
+
+        // Set up polling interval to fetch live results every 10 seconds
+        const intervalId = setInterval(loadPayments, 10000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(intervalId);
+        };
     }, []);
 
     // Summary Metrics
