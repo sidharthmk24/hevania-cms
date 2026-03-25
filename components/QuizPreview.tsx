@@ -131,7 +131,7 @@ export function QuizPreview({ topicId, onBack }: Props) {
           <>
             <div className="text-center mb-12">
               <h1 className="text-3xl sm:text-5xl font-serif font-normal  mb-4 text-[#1A1A1A] leading-tight">
-                {topic.heading || topic.title}
+                {topic.title}
               </h1>
               <p className="text-[#6A6A6A] font-sans text-lg max-w-[550px] mx-auto leading-relaxed">
                 {topic.description || "This is a gentle check-in, not a test. Answer honestly. There are no right or wrong answers."}
