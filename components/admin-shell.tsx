@@ -78,6 +78,7 @@ export function AdminShell({ children }: Props) {
                     : "text-[#2D2D2D]/70 hover:bg-[#F5EDE4]/60 hover:text-[#2D2D2D]"
                 )}
               >
+                
                 <Icon className="h-4 w-4" />
                 {item.label}
               </Link>
