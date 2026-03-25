@@ -13,6 +13,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "campaignId is required." }, { status: 400 });
     }
 
+    // --- Env Check ---
+    const requiredEnv = [
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "SMTP_HOST",
+      "SMTP_USER",
+      "SMTP_PASSWORD",
+    ];
+    const missing = requiredEnv.filter((key) => !process.env[key]);
+    if (missing.length > 0) {
+      console.error("[newsletter/send] Missing environment variables:", missing);
+      return NextResponse.json(
+        { error: `Server configuration error: missing ${missing.join(", ")}` },
+        { status: 500 }
+      );
+    }
+
     const supabase = createApiSupabaseClient();
 
     // --- Fetch the campaign ---
@@ -23,6 +40,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (campaignErr || !campaign) {
+      console.error("[newsletter/send] Campaign not found:", campaignId, campaignErr);
       return NextResponse.json({ error: "Campaign not found." }, { status: 404 });
     }
 
@@ -39,7 +57,10 @@ export async function POST(req: NextRequest) {
       .select("email")
       .eq("status", "active");
 
-    if (subErr) throw subErr;
+    if (subErr) {
+      console.error("[newsletter/send] Error fetching subscribers:", subErr);
+      throw subErr;
+    }
 
     if (!subscribers || subscribers.length === 0) {
       return NextResponse.json(
@@ -49,31 +70,48 @@ export async function POST(req: NextRequest) {
     }
 
     // --- Mark as 'sending' ---
-    await supabase
+    const { error: updateErr } = await supabase
       .from("newsletter_campaigns")
       .update({ status: "sending" })
       .eq("id", campaignId);
+
+    if (updateErr) {
+      console.error("[newsletter/send] Error updating campaign status to sending:", updateErr);
+      throw updateErr;
+    }
 
     // --- Send emails in BCC batches of 50 ---
     const emails = subscribers.map((s) => s.email);
     const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || "";
     const BATCH_SIZE = 50;
 
+    console.log(`[newsletter/send] Sending campaign '${campaign.subject}' to ${emails.length} subscribers in batches of ${BATCH_SIZE}...`);
+
     for (let i = 0; i < emails.length; i += BATCH_SIZE) {
       const bcc = emails.slice(i, i + BATCH_SIZE);
-      await sendEmail({
-        to: fromEmail,         // "To" = sender's own address; recipients are BCC'd
-        subject: campaign.subject,
-        html: campaign.html_content,
-        bcc,
-      });
+      try {
+        await sendEmail({
+          to: fromEmail,         // "To" = sender's own address; recipients are BCC'd
+          subject: campaign.subject,
+          html: campaign.html_content,
+          bcc,
+        });
+      } catch (mailErr) {
+        console.error(`[newsletter/send] Failed to send email batch ${i / BATCH_SIZE + 1}:`, mailErr);
+        throw new Error("Failed to send email via SMTP. Please check your credentials.");
+      }
     }
 
     // --- Mark as sent ---
-    await supabase
+    const { error: finalErr } = await supabase
       .from("newsletter_campaigns")
       .update({ status: "sent", sent_at: new Date().toISOString() })
       .eq("id", campaignId);
+
+    if (finalErr) {
+      console.error("[newsletter/send] Error updating campaign status tracking:", finalErr);
+      // We don't throw here because emails WERE sent
+    }
 
     return NextResponse.json({
       message: `Campaign sent successfully to ${emails.length} subscriber${emails.length !== 1 ? "s" : ""}.`,
@@ -93,8 +131,10 @@ export async function POST(req: NextRequest) {
       } catch { /* ignore */ }
     }
 
+    const message = err instanceof Error ? err.message : "Failed to send campaign. Please try again.";
+
     return NextResponse.json(
-      { error: "Failed to send campaign. Please try again." },
+      { error: message },
       { status: 500 }
     );
   }
