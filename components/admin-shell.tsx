@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, BookOpen, LogOut, Leaf, CreditCard, Wrench, MessageSquare } from "lucide-react";
+import { LayoutDashboard, BookOpen, LogOut, CreditCard, Wrench, MessageSquare, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ const navItems = [
   { label: "Tools", href: "/admin/tools", icon: Wrench },
   { label: "Payments", href: "/admin/payments", icon: CreditCard },
   { label: "Messages", href: "/admin/messages", icon: MessageSquare },
+  { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
 ];
 
 export function AdminShell({ children }: Props) {
@@ -27,6 +28,9 @@ export function AdminShell({ children }: Props) {
   if (pathname.startsWith("/admin/payments")) pageTitle = "Payments Log";
   if (pathname.startsWith("/admin/messages")) pageTitle = "Messages";
   if (pathname.startsWith("/admin/tools")) pageTitle = "Tools Manager";
+  if (pathname.startsWith("/admin/newsletter/subscribers")) pageTitle = "Subscribers";
+  if (pathname.startsWith("/admin/newsletter/campaigns")) pageTitle = "Campaigns";
+  if (pathname.startsWith("/admin/newsletter")) pageTitle = "Newsletter";
   if (pathname.startsWith("/quiz")) pageTitle = "Quiz Player";
 
   async function onSignOut() {
