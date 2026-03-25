@@ -1,12 +1,24 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
+const smtpConfig = {
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 587,
+  user: process.env.SMTP_USER,
+  pass: process.env.SMTP_PASSWORD,
+};
+
+// Log warning if missing config (better than failing with cryptic errors later)
+if (!smtpConfig.host || !smtpConfig.user || !smtpConfig.pass) {
+  console.warn("[mailer] Missing SMTP configuration. Email features will fail.");
+}
+
+const transporter = nodemailer.createTransport({
+  host: smtpConfig.host,
+  port: smtpConfig.port,
   secure: false, // STARTTLS
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
+    user: smtpConfig.user,
+    pass: smtpConfig.pass,
   },
 });
 
