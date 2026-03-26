@@ -511,6 +511,7 @@ export default function TopicEditorPage() {
                               [q.id]: { ...(prev[q.id] || q), order: Number(e.target.value) }
                             }))
                           }
+                          
                         />
                       </div>
                       <Button variant="outline" size="sm" className="border-brand-copper/30 text-brand-dark hover:bg-brand-olive hover:text-white hover:border-brand-olive transition-colors" onClick={() => onUpdateQuestion(q.id)}>
