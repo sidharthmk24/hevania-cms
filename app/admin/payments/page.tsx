@@ -171,13 +171,17 @@ export default function PaymentsPage() {
                                                         {p.payment_id || "—"}
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        {p.email_sent ? (
+                                                        {p.email_sent === true ? (
                                                             <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-green">
                                                                 <CheckCircle2 className="w-3.5 h-3.5" /> Sent
                                                             </span>
+                                                        ) : p.status === 'successful' && p.email_sent === false ? (
+                                                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-500">
+                                                                <XCircle className="w-3.5 h-3.5" /> Failed
+                                                            </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-dark/40">
-                                                                <XCircle className="w-3.5 h-3.5" /> No
+                                                                <Clock className="w-3.5 h-3.5" /> —
                                                             </span>
                                                         )}
                                                     </td>
