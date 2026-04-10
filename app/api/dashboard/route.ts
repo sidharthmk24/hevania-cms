@@ -8,56 +8,35 @@ export async function GET() {
     const supabase = createApiSupabaseClient();
 
     try {
-        // 1. Get Tools stats
-        const { data: tools, error: toolsError } = await supabase
-            .from('tools')
-            .select('id, is_active');
-
-        if (toolsError) throw toolsError;
-
-        // 2. Get Payment stats
-        const { data: payments, error: paymentsError } = await supabase
-            .from('payments')
-            .select('amount, status, created_at');
-
-        if (paymentsError) throw paymentsError;
-
-        // 3. Get Messages stats
-        const { data: messages, error: messagesError } = await supabase
-            .from('contact_messages')
-            .select('created_at')
-            .order('created_at', { ascending: false })
-            .limit(10); // Just checking recent activity
-
-        if (messagesError) throw messagesError;
-
-        // 4. Get Quiz Topics stats
-        const { count: topicsCount, error: topicsError } = await supabase
-            .from('quiz_topics')
+        // 1. Get total images
+        const { count: totalImages, error: countError } = await supabase
+            .from('gallery')
             .select('*', { count: 'exact', head: true });
 
-        if (topicsError) throw topicsError;
+        if (countError) {
+            // If table doesn't exist yet, return 0 instead of throwing
+            console.warn("Gallery table may not exist yet:", countError.message);
+        }
 
-        // Calculate aggregations
-        const totalTools = tools?.length || 0;
-        const activeTools = tools?.filter(t => t.is_active)?.length || 0;
+        // 2. Get recent uploads (past 7 days)
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const { count: recentUploads, error: recentError } = await supabase
+            .from('gallery')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', sevenDaysAgo);
 
-        const successfulPayments = payments?.filter(p => p.status === 'successful') || [];
-        const totalSales = successfulPayments.length;
-        const totalRevenueResult = successfulPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
-
-        const recentMessagesCount = messages?.length || 0;
+        // 3. Get distinct sections count (simple estimate)
+        const { data: sectionsData, error: sectionsError } = await supabase
+            .from('gallery')
+            .select('section');
+        
+        const distinctSections = new Set(sectionsData?.map(s => s.section) || []);
 
         return NextResponse.json({
             data: {
-                revenue: totalRevenueResult,
-                sales: totalSales,
-                tools: {
-                    total: totalTools,
-                    active: activeTools
-                },
-                topicsCount: topicsCount || 0,
-                recentMessages: recentMessagesCount
+                totalImages: totalImages || 0,
+                recentUploads: recentUploads || 0,
+                sectionsCount: distinctSections.size || 0
             }
         });
 

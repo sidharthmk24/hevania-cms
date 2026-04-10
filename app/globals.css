@@ -2,25 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: 30 20% 98%;
-  --foreground: 24 8% 16%;
+  --background: 60 20% 95%; /* Cream #F5F5F0 */
+  --foreground: 120 14% 21%; /* Dark Forest #2F3E2F */
   --card: 0 0% 100%;
-  --card-foreground: 24 8% 16%;
-  --primary: 25 30% 55%;
-  --primary-foreground: 40 50% 97%;
-  --secondary: 80 24% 46%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 30 14% 93%;
-  --muted-foreground: 24 10% 45%;
-  --accent: 25 45% 70%;
-  --accent-foreground: 24 8% 16%;
-  --border: 30 14% 88%;
-  --input: 30 14% 88%;
-  --ring: 25 30% 55%;
-  --radius: 0.75rem;
+  --card-foreground: 120 14% 21%;
+  --primary: 104 30% 70%; /* Luxury Green #A8C3A0 */
+  --primary-foreground: 120 14% 21%;
+  --secondary: 108 30% 81%; /* Soft Sage #C7D9C1 */
+  --secondary-foreground: 120 14% 21%;
+  --muted: 60 10% 90%;
+  --muted-foreground: 120 10% 40%;
+  --accent: 42 45% 57%; /* Muted Gold #C6A75E */
+  --accent-foreground: 120 14% 21%;
+  --border: 120 10% 85%;
+  --input: 120 10% 88%;
+  --ring: 104 30% 70%;
+  --radius: 0rem; /* Flat corporate but luxury sharp edges */
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 }

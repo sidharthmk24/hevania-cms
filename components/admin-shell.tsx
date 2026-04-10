@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, BookOpen, LogOut, CreditCard, Wrench, MessageSquare, Mail } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, LogOut, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,24 +13,15 @@ type Props = {
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Quizzes", href: "/admin/topics", icon: BookOpen },
-  { label: "Tools", href: "/admin/tools", icon: Wrench },
-  { label: "Payments", href: "/admin/payments", icon: CreditCard },
-  { label: "Messages", href: "/admin/messages", icon: MessageSquare },
-  { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
+  { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+  { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
 ];
 
 export function AdminShell({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   let pageTitle = "Dashboard";
-  if (pathname.startsWith("/admin/topics")) pageTitle = "Quizzes Dashboard";
-  if (pathname.startsWith("/admin/payments")) pageTitle = "Payments Log";
-  if (pathname.startsWith("/admin/messages")) pageTitle = "Messages";
-  if (pathname.startsWith("/admin/tools")) pageTitle = "Tools Manager";
-  if (pathname.startsWith("/admin/newsletter/subscribers")) pageTitle = "Subscribers";
-  if (pathname.startsWith("/admin/newsletter/campaigns")) pageTitle = "Campaigns";
-  if (pathname.startsWith("/admin/newsletter")) pageTitle = "Newsletter";
+  if (pathname.startsWith("/admin/gallery")) pageTitle = "Gallery Management";
   if (pathname.startsWith("/quiz")) pageTitle = "Quiz Player";
 
   async function onSignOut() {
@@ -43,15 +34,15 @@ export function AdminShell({ children }: Props) {
   return (
     <div className="flex min-h-screen w-full bg-transparent">
       {/* ───── Sidebar ───── */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-brand-copper/10 bg-white lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-brand-green/10 bg-white lg:flex">
         {/* Brand Header */}
-        <div className="flex h-16 shrink-0 items-center gap-3 border-b border-[#B38B6D]/10 px-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-white shadow-sm overflow-hidden border border-[#B38B6D]/20">
-            <img src="/logo.png" alt="SoulWealth Logo" className="w-full h-full object-contain p-0.5" />
+        <div className="flex h-16 shrink-0 items-center gap-3 border-b border-brand-green/10 px-5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-white shadow-sm overflow-hidden border border-brand-green/20">
+            <img src="/logo.png" alt="Hevania Logo" className="w-full h-full object-contain p-0.5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#2D2D2D]">SoulWealth</p>
-            <p className="text-[11px] font-medium tracking-wide text-[#B38B6D]">Admin Console</p>
+            <p className="text-sm font-semibold text-brand-forest">Hevania</p>
+            <p className="text-[11px] font-medium tracking-wide text-brand-gold">Admin Console</p>
           </div>
         </div>
 

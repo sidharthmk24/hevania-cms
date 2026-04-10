@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SoulWealth Studio — Admin",
-  description: "Content management system for SoulWealth Studio"
+  title: "Hevania — Admin",
+  description: "Content management system for Hevania"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

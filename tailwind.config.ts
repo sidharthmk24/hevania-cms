@@ -50,14 +50,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))"
         },
-        /* Brand colours from the SoulWealth Studio website */
+        /* Brand colors from Hevania */
         brand: {
-          copper: "#B38B6D",
-          olive: "#7A8F5B",
-          gold: "#D4A373",
-          green: "#6B8E23",
-          sand: "#F5EDE4",
-          dark: "#2D2D2D",
+          forest: "#2F3E2F",
+          green: "#A8C3A0",
+          sage: "#C7D9C1",
+          gold: "#C6A75E",
+          cream: "#F5F5F0",
+          dark: "#1A221A",
         }
       },
       borderRadius: {
@@ -66,10 +66,10 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)"
       },
       boxShadow: {
-        "card": "0 1px 3px 0 rgba(179, 139, 109, 0.08), 0 1px 2px -1px rgba(179, 139, 109, 0.08)",
-        "card-hover": "0 4px 12px 0 rgba(179, 139, 109, 0.12), 0 2px 4px -2px rgba(179, 139, 109, 0.08)",
-        "warm-sm": "0 1px 2px 0 rgba(179, 139, 109, 0.06)",
-        "warm-lg": "0 10px 15px -3px rgba(179, 139, 109, 0.1), 0 4px 6px -4px rgba(179, 139, 109, 0.1)",
+        "card": "0 1px 3px 0 rgba(47, 62, 47, 0.08), 0 1px 2px -1px rgba(47, 62, 47, 0.08)",
+        "card-hover": "0 4px 12px 0 rgba(47, 62, 47, 0.12), 0 2px 4px -2px rgba(47, 62, 47, 0.08)",
+        "warm-sm": "0 1px 2px 0 rgba(47, 62, 47, 0.06)",
+        "warm-lg": "0 10px 15px -3px rgba(47, 62, 47, 0.1), 0 4px 6px -4px rgba(47, 62, 47, 0.1)",
       },
       keyframes: {
         "fade-in": {

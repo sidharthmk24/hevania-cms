@@ -40,22 +40,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container flex min-h-screen items-center justify-center py-10 px-4 bg-gradient-to-br from-brand-sand/40 via-white to-brand-sand/20">
+    <div className="container flex min-h-screen items-center justify-center py-10 px-4 bg-brand-cream">
       <div className="w-full max-w-md animate-fade-in relative z-10">
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-serif text-brand-dark mb-2">SoulWealth CMS</h1>
-          <p className="text-brand-dark/60">Secure admin access</p>
+          <h1 className="text-3xl font-serif text-brand-forest mb-2">Hevania CMS</h1>
+          <p className="text-brand-forest/60 italic font-light">Secure admin access</p>
         </div>
 
-        <Card className="border-brand-copper/20 bg-white/90 backdrop-blur-md shadow-warm-lg overflow-hidden">
-          <div className="h-1.5 w-full bg-gradient-to-r from-brand-olive to-brand-green" />
+        <Card className="border-brand-green/20 bg-white/90 backdrop-blur-md shadow-warm-lg overflow-hidden">
+          <div className="h-1.5 w-full bg-brand-forest" />
           <CardHeader className="pt-8 pb-4 text-center">
-            <div className="mx-auto w-16 h-16 bg-white rounded-xl flex items-center justify-center mb-5 border border-brand-copper/20 shadow-warm-sm overflow-hidden">
-              <img src="/logo.png" alt="SoulWealth Logo" className="w-full h-full object-contain p-1.5" />
+            <div className="mx-auto w-16 h-16 bg-white rounded-xl flex items-center justify-center mb-5 border border-brand-green/20 shadow-warm-sm overflow-hidden p-1">
+              <img src="/logo.png" alt="Hevania Logo" className="w-full h-full object-contain" />
             </div>
-            <CardTitle className="text-xl font-serif text-brand-dark">Sign In</CardTitle>
-            <CardDescription className="text-brand-dark/60 mt-1">Enter your details to access the dashboard</CardDescription>
+            <CardTitle className="text-xl font-serif text-brand-forest tracking-wide">Sign In</CardTitle>
+            <CardDescription className="text-brand-forest/60 mt-1 uppercase text-[10px] tracking-widest font-semibold">Dashboard Access</CardDescription>
           </CardHeader>
           <CardContent className="px-8 pb-8">
             <form onSubmit={onSubmit} className="space-y-5">
