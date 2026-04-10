@@ -501,7 +501,7 @@ export default function GalleryPage() {
                                     <div className="mt-4 space-y-1.5">
                                         {sectionEntries.slice(0, 2).map((entry, i) => (
                                             <div key={entry.id} className="flex items-center gap-2 px-2.5 py-1.5 bg-white/60 rounded-lg">
-                                                {entry.content_json.image_url && (
+                                                {!!entry.content_json.image_url && (
                                                     <img
                                                         src={String(entry.content_json.image_url)}
                                                         alt=""
