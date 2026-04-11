@@ -38,10 +38,10 @@ export function AdminShell({ children }: Props) {
         {/* Brand Header */}
         <div className="flex h-16 shrink-0 items-center gap-3 border-b border-brand-green/10 px-5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-white shadow-sm overflow-hidden border border-brand-green/20">
-            <img src="/logo.png" alt="Hevania Logo" className="w-full h-full object-contain p-0.5" />
+            <img src="/logo.png" alt="HEVANIYA Logo" className="w-full h-full object-contain p-0.5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-brand-forest">Hevania</p>
+            <p className="text-sm font-semibold text-brand-forest">HEVANIYA</p>
             <p className="text-[11px] font-medium tracking-wide text-brand-gold">Admin Console</p>
           </div>
         </div>
@@ -69,8 +69,8 @@ export function AdminShell({ children }: Props) {
                     : "text-[#2D2D2D]/70 hover:bg-[#F5EDE4]/60 hover:text-[#2D2D2D]"
                 )}
               >
-                
-                
+
+
                 <Icon className="h-4 w-4" />
                 {item.label}
               </Link>

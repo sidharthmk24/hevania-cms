@@ -11,11 +11,11 @@ export default function HomePage() {
       <div className="w-full max-w-2xl animate-fade-in">
         <div className="text-center mb-10">
           <div className="mx-auto w-24 h-24 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-warm-md border border-brand-green/20 overflow-hidden">
-            <img src="/logo.png" alt="Hevania Logo" className="w-full h-full object-contain p-2" />
+            <img src="/logo.png" alt="HEVANIYA Logo" className="w-full h-full object-contain p-2" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-normal text-brand-forest mb-4 tracking-tight">Hevania</h1>
+          <h1 className="text-4xl md:text-5xl font-serif font-normal text-brand-forest mb-4 tracking-tight">HEVANIYA</h1>
           <p className="text-lg text-brand-forest/70 font-light max-w-lg mx-auto italic">
-            Content management system for Hevania.
+            Content management system for HEVANIYA.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export default function HomePage() {
             </Link>
           </CardContent>
           <div className="bg-brand-sage/10 p-4 border-t border-brand-green/10 text-center">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-forest/40">Hevania &copy; {new Date().getFullYear()}</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-forest/40">HEVANIYA &copy; {new Date().getFullYear()}</p>
           </div>
         </Card>
       </div>

@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
             <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between border-b border-brand-green/10 pb-6 rounded-t-xl bg-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] backdrop-blur-sm px-6">
                 <div>
                     <h1 className="text-3xl font-serif text-brand-forest tracking-tight">Overview</h1>
-                    <p className="text-brand-forest/60 mt-1 italic">Welcome back. Manage Hevania assets.</p>
+                    <p className="text-brand-forest/60 mt-1 italic">Welcome back. Manage HEVANIYA assets.</p>
                 </div>
             </div>
 
@@ -126,7 +126,7 @@ export default function AdminDashboardPage() {
                                     <ArrowRight className="w-4 h-4 text-brand-forest/30 group-hover:text-brand-gold group-hover:-translate-x-1 transition-all" />
                                 </div>
                             </Link>
-                            
+
                             <Link href="/admin/gallery#upload" className="group">
                                 <div className="flex items-center justify-between p-4 bg-white border border-brand-green/10 rounded-xl shadow-sm hover:shadow-warm-sm hover:border-brand-green/30 transition-all">
                                     <div className="flex items-center gap-3">

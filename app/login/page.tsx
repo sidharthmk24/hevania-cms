@@ -44,7 +44,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md animate-fade-in relative z-10">
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-serif text-brand-forest mb-2">Hevania CMS</h1>
+          <h1 className="text-3xl font-serif text-brand-forest mb-2">HEVANIYA CMS</h1>
           <p className="text-brand-forest/60 italic font-light">Secure admin access</p>
         </div>
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
           <div className="h-1.5 w-full bg-brand-forest" />
           <CardHeader className="pt-8 pb-4 text-center">
             <div className="mx-auto w-16 h-16 bg-white rounded-xl flex items-center justify-center mb-5 border border-brand-green/20 shadow-warm-sm overflow-hidden p-1">
-              <img src="/logo.png" alt="Hevania Logo" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="HEVANIYA Logo" className="w-full h-full object-contain" />
             </div>
             <CardTitle className="text-xl font-serif text-brand-forest tracking-wide">Sign In</CardTitle>
             <CardDescription className="text-brand-forest/60 mt-1 uppercase text-[10px] tracking-widest font-semibold">Dashboard Access</CardDescription>

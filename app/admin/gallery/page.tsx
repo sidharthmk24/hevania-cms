@@ -38,7 +38,7 @@ const SECTION_CARDS = [
         description: "Carousel slides with headings, subtitles & buttons",
         fields: [
             { key: "top_desc", label: "Top Description (Subtitle)", type: "text", placeholder: "Where Refined Celebrations Find Their Perfect Space" },
-            { key: "heading", label: "Main Heading", type: "text", placeholder: "HEVANIA" },
+            { key: "heading", label: "Main Heading", type: "text", placeholder: "HEVANIYA" },
             { key: "button_primary", label: "Primary Button Text", type: "text", placeholder: "Schedule a Tour" },
             { key: "button_secondary", label: "Secondary Button Text", type: "text", placeholder: "Submit Inquiry" },
         ],
@@ -97,6 +97,38 @@ const SECTION_CARDS = [
         imageLabel: "Card Image",
         keyPrefix: "card",
         maxEntries: 3,
+    },
+    {
+        id: "experience",
+        label: "Experience",
+        icon: Star,
+        color: "from-indigo-50 to-indigo-100",
+        iconColor: "text-indigo-600",
+        borderColor: "border-indigo-200",
+        description: "Two parallax images for the experience section",
+        fields: [
+            { key: "alt", label: "Alt Text", type: "text", placeholder: "Luxury Interior" },
+        ],
+        hasImage: true,
+        imageLabel: "Section Image",
+        keyPrefix: "image",
+        maxEntries: 2,
+    },
+    {
+        id: "logoloop",
+        label: "Gallery (Loop)",
+        icon: ImageIcon,
+        color: "from-rose-50 to-rose-100",
+        iconColor: "text-rose-600",
+        borderColor: "border-rose-200",
+        description: "Infinite scrolling gallery images",
+        fields: [
+            { key: "alt", label: "Alt Text", type: "text", placeholder: "Venue Highlights" },
+        ],
+        hasImage: true,
+        imageLabel: "Gallery Image",
+        keyPrefix: "image",
+        maxEntries: 12,
     },
 ];
 
@@ -507,6 +539,8 @@ export default function GalleryPage() {
                                                         alt=""
                                                         className="w-6 h-6 rounded object-cover shrink-0"
                                                     />
+
+
                                                 )}
                                                 <span className="text-xs text-gray-600 truncate">
                                                     {String(

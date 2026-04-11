@@ -50,7 +50,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))"
         },
-        /* Brand colors from Hevania */
+        /* Brand colors from HEVANIYA */
         brand: {
           forest: "#2F3E2F",
           green: "#A8C3A0",
