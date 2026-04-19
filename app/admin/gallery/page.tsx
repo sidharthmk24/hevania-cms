@@ -39,6 +39,7 @@ const SECTION_CARDS = [
         fields: [
             { key: "top_desc", label: "Top Description (Subtitle)", type: "text", placeholder: "Where Refined Celebrations Find Their Perfect Space" },
             { key: "heading", label: "Main Heading", type: "text", placeholder: "HEVANIYA" },
+            { key: "bottom_subtitle", label: "Bottom Subtitle", type: "text", placeholder: "A breathtaking destination for premium events" },
             { key: "button_primary", label: "Primary Button Text", type: "text", placeholder: "Schedule a Tour" },
             { key: "button_secondary", label: "Secondary Button Text", type: "text", placeholder: "Submit Inquiry" },
         ],
@@ -46,6 +47,7 @@ const SECTION_CARDS = [
         imageLabel: "Slide Background Image",
         keyPrefix: "slide",
         maxEntries: 3,
+        hideCount: false,
     },
     {
         id: "scroll_section",
@@ -63,6 +65,7 @@ const SECTION_CARDS = [
         imageLabel: "Section Image",
         keyPrefix: "item",
         maxEntries: 4,
+        hideCount: false,
     },
     {
         id: "carousel",
@@ -79,7 +82,8 @@ const SECTION_CARDS = [
         hasImage: true,
         imageLabel: "Card Image",
         keyPrefix: "card",
-        maxEntries: 7,
+        maxEntries: 6,
+        hideCount: false,
     },
     {
         id: "sustainability",
@@ -97,6 +101,7 @@ const SECTION_CARDS = [
         imageLabel: "Card Image",
         keyPrefix: "card",
         maxEntries: 3,
+        hideCount: false,
     },
     {
         id: "experience",
@@ -113,6 +118,7 @@ const SECTION_CARDS = [
         imageLabel: "Section Image",
         keyPrefix: "image",
         maxEntries: 2,
+        hideCount: false,
     },
     {
         id: "logoloop",
@@ -122,13 +128,12 @@ const SECTION_CARDS = [
         iconColor: "text-rose-600",
         borderColor: "border-rose-200",
         description: "Infinite scrolling gallery images",
-        fields: [
-            { key: "alt", label: "Alt Text", type: "text", placeholder: "Venue Highlights" },
-        ],
+        fields: [],
         hasImage: true,
         imageLabel: "Gallery Image",
         keyPrefix: "image",
         maxEntries: 12,
+        hideCount: true,
     },
 ];
 
@@ -270,13 +275,13 @@ function SectionModal({
     const canAddMore = existingEntries.length < sectionConfig.maxEntries;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4  backdrop-blur-sm" onClick={onClose}>
             <div
-                className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                className="relative w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] outline-none border-0"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className={`bg-gradient-to-r ${sectionConfig.color} border-b ${sectionConfig.borderColor} px-6 py-5 flex items-center justify-between shrink-0`}>
+                <div className={`bg-gradient-to-r ${sectionConfig.color} border-b ${sectionConfig.borderColor} px-6 py-5 flex items-center justify-between shrink-0 rounded-t-2xl`}>
                     <div className="flex items-center gap-3">
                         <div className={`p-2 bg-white/70 rounded-xl ${sectionConfig.iconColor}`}>
                             <Icon className="w-5 h-5" />
@@ -291,11 +296,13 @@ function SectionModal({
                     </button>
                 </div>
 
-                <div className="flex flex-1 overflow-hidden">
+                <div className="flex flex-1 overflow-hidden bg-white rounded-b-2xl">
                     {/* Left: Entry List */}
                     <div className="w-48 bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
                         <div className="px-3 py-3 border-b border-gray-200">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Entries ({existingEntries.length}/{sectionConfig.maxEntries})</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                                {sectionConfig.hideCount ? "Entries" : `Entries (${existingEntries.length}/${sectionConfig.maxEntries})`}
+                            </p>
                         </div>
                         <div className="flex-1 overflow-y-auto py-2">
                             {existingEntries.map((entry, i) => (
@@ -516,7 +523,7 @@ export default function GalleryPage() {
                                         <Icon className="w-5 h-5" />
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {hasContent && (
+                                        {hasContent && !section.hideCount && (
                                             <span className="px-2 py-0.5 bg-white/80 border border-white/60 rounded-full text-[10px] font-bold text-gray-600 shadow-sm">
                                                 {sectionEntries.length}/{section.maxEntries}
                                             </span>
