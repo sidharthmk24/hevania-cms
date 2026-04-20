@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Image as ImageIcon, LogOut, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, LogOut, MessageSquare, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
+  { label: "Leads", href: "/admin/leads", icon: Users },
 ];
 
 export function AdminShell({ children }: Props) {

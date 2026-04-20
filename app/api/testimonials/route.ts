@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     name,
     comment,
     rating,
+    image_url: body?.image_url || null,
   };
 
   const { data, error } = await supabase.from("testimonials").insert(payload).select("*").single();
