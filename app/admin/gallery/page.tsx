@@ -103,23 +103,7 @@ const SECTION_CARDS = [
         maxEntries: 3,
         hideCount: false,
     },
-    {
-        id: "experience",
-        label: "Experience",
-        icon: Star,
-        color: "from-indigo-50 to-indigo-100",
-        iconColor: "text-indigo-600",
-        borderColor: "border-indigo-200",
-        description: "Two parallax images for the experience section",
-        fields: [
-            { key: "alt", label: "Alt Text", type: "text", placeholder: "Luxury Interior" },
-        ],
-        hasImage: true,
-        imageLabel: "Section Image",
-        keyPrefix: "image",
-        maxEntries: 2,
-        hideCount: false,
-    },
+
     {
         id: "logoloop",
         label: "Gallery (Loop)",

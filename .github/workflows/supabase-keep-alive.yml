@@ -1,0 +1,33 @@
+name: Supabase Keep-Alive Cron
+
+on:
+  schedule:
+    # Runs every 5 days at 00:00 UTC (prevents the 7-day inactivity pause)
+    - cron: '0 0 */5 * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+jobs:
+  keep-alive:
+    name: Keep Supabase Active
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Supabase Keep-Alive Ping
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://shibhckktucphvxwmjnu.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoaWJoY2trdHVjcGh2eHdtam51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTMxMzYsImV4cCI6MjA5MTE2OTEzNn0.wJLYoghDP88qoG_EEfkAUB0cEdGYl4tsXMlWPQMRF58' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoaWJoY2trdHVjcGh2eHdtam51Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTU5MzEzNiwiZXhwIjoyMDkxMTY5MTM2fQ.EfwWNV8zcmR0zMK13IeSL2kLG-t_kxkHBot7IvNat1o' }}
+          CMS_APP_URL: ${{ secrets.CMS_APP_URL }}
+        run: |
+          node scripts/keep-alive.mjs
+          if [ -n "$CMS_APP_URL" ]; then
+            echo "Pinging CMS keep-alive route..."
+            curl -fsS "$CMS_APP_URL/api/cron/keep-alive" || true
+          fi
