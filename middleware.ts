@@ -34,11 +34,10 @@ export async function middleware(request: NextRequest) {
   try {
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       global: {
-        // Enforce a 3.5s timeout so middleware never times out Vercel's limit
         fetch: (input: RequestInfo | URL, init?: RequestInit) => {
           return fetch(input, {
             ...init,
-            signal: AbortSignal.timeout(3500)
+            signal: AbortSignal.timeout(2000)
           });
         }
       },
@@ -58,9 +57,14 @@ export async function middleware(request: NextRequest) {
       }
     });
 
+    // Hard JavaScript timeout race to guarantee middleware NEVER hangs on Vercel
+    const authTimeout = new Promise<{ data: { user: null }; error: Error }>((resolve) =>
+      setTimeout(() => resolve({ data: { user: null }, error: new Error("Auth timeout") }), 2000)
+    );
+
     const {
       data: { user }
-    } = await supabase.auth.getUser();
+    } = await Promise.race([supabase.auth.getUser(), authTimeout]);
 
     if (pathname.startsWith("/admin") && !user) {
       const url = request.nextUrl.clone();
@@ -81,7 +85,7 @@ export async function middleware(request: NextRequest) {
     }
   } catch (error) {
     console.error("Middleware Supabase auth check failed or timed out:", error);
-    if (pathname.startsWith("/admin")) {
+    if (pathname.startsWith("/admin") || pathname === "/") {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       return NextResponse.redirect(url);
