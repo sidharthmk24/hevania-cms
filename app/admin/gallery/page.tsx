@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 // ——— Types ———
-export type SectionField = {
+type SectionField = {
     key: string;
     label: string;
     type: "text" | "textarea" | "select";
@@ -20,7 +20,7 @@ export type SectionField = {
     options?: string[];
 };
 
-export type SectionConfig = {
+type SectionConfig = {
     id: string;
     page: "home" | "about" | "contact";
     label: string;
@@ -54,7 +54,7 @@ type GalleryItem = {
 };
 
 // ——— Section Configs by Page ———
-export const SECTION_CARDS: SectionConfig[] = [
+const SECTION_CARDS: SectionConfig[] = [
     // ═══════════════ HOME PAGE ═══════════════
     {
         id: "hero",
