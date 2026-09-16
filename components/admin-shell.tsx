@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Image as ImageIcon, LogOut, MessageSquare, Users, FileText, Star } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, LogOut, MessageSquare, Users, FileText, Star, Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ type Props = {
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+  { label: "Pages & Sections", href: "/admin/gallery", icon: Layers },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
   { label: "Blogs", href: "/admin/blogs", icon: FileText },
   { label: "Experience", href: "/admin/experience", icon: Star },
@@ -24,7 +24,7 @@ export function AdminShell({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   let pageTitle = "Dashboard";
-  if (pathname.startsWith("/admin/gallery")) pageTitle = "Gallery Management";
+  if (pathname.startsWith("/admin/gallery")) pageTitle = "Pages & Sections";
   if (pathname.startsWith("/admin/experience")) pageTitle = "Experience Section";
   if (pathname.startsWith("/quiz")) pageTitle = "Quiz Player";
 
