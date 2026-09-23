@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
     Upload, Image as ImageIcon, Loader2, X, Plus, Check,
     Type, AlignLeft, Star, Layers, Leaf, Trash2,
@@ -486,11 +487,15 @@ function SectionModal({
 
     const Icon = sectionConfig.icon;
     const canAddMore = !isSingleEntry && existingEntries.length < sectionConfig.maxEntries;
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+    if (!mounted) return null;
+
+    return createPortal(
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-black/40 backdrop-blur-md" onClick={onClose}>
             <div
-                className="relative w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] bg-white border border-brand-green/20 animate-in fade-in zoom-in-95 duration-200"
+                className="relative w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh] bg-white border border-gray-100 animate-in fade-in zoom-in-95 duration-200"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
@@ -677,7 +682,7 @@ function SectionModal({
                 </div>
             </div>
         </div>
-    );
+    , document.body);
 }
 
 // ——— Main Pages & Sections Manager ———
